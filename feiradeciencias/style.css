@@ -1,0 +1,38 @@
+body {
+  text-align: center;
+  font-family: sans-serif;
+  background: #111;
+  color: white;
+  margin-top: 50px;
+}
+
+.slot-machine {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 50px;
+  margin-bottom: 20px;
+}
+
+.slot {
+  width: 60px;
+  height: 60px;
+  background: #222;
+  border: 2px solid #555;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#mode-indicator {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #888;
+  opacity: 0.6;
+  z-index: 1000;
+  pointer-events: none;
+  user-select: none;
+}
