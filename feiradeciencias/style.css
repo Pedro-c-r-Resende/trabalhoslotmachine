@@ -1,38 +1,149 @@
 body {
-  text-align: center;
-  font-family: sans-serif;
-  background: #111;
-  color: white;
-  margin-top: 50px;
+  margin: 0;
+  padding: 0;
+  background: #300214;
+  font-family: 'Press Start 2P', cursive;
+  color: #fff;
 }
 
 .slot-machine {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #8B0000;
+  border: 8px solid gold;
+  border-radius: 20px;
+  box-shadow: 0 0 20px gold;
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  font-size: 50px;
-  margin-bottom: 20px;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;          /* para caber na tela inteira */
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.slot {
-  width: 60px;
-  height: 60px;
-  background: #222;
-  border: 2px solid #555;
+.title {
+  text-align: center;
+  color: gold;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.image-placeholder img {
+  width: 150px;
+  height: auto;
+  margin-bottom: 10px;
+  object-fit: contain;
+}
+
+.reels {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.reel {
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, #0b0431, #2600ff);
+  border: 4px solid #fff;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 40px;
+  color: #8B0000;
+  box-shadow: inset 0 0 10px #fff;
 }
-#mode-indicator {
-  position: fixed;
-  top: 10px;
-  right: 10px;
+
+.button-container {
+  margin-bottom: 15px;
+}
+
+.button {
+  background: linear-gradient(45deg, #FFD700, #FF8C00);
+  border: 3px solid #fff;
+  padding: 20px 50px;
+  border-radius: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  color: #8B0000;
+  font-weight: bold;
+}
+
+.button:hover {
+  transform: scale(1.1);
+}
+
+.info-controls {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: gold;
+}
+
+.control p {
+  margin: 0;
   font-size: 14px;
   font-weight: bold;
-  color: #888;
-  opacity: 0.6;
-  z-index: 1000;
+}
+
+.btn-control {
+  background: linear-gradient(45deg, #FFD700, #FF8C00);
+  border: 2px solid #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #8B0000;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+.btn-control:hover {
+  transform: scale(1.1);
+}
+
+.saldo-control {
+  justify-content: flex-start;
+}
+
+.aposta-control {
+  justify-content: flex-end;
+}
+.mode-indicator {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  font-size: 10px;
+  color: #ccc;
+  opacity: 0.7;
+  z-index: 9999;  /* para ficar acima de tudo */
+}
+
+#result-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #0b0431;
+  color: gold;
+  padding: 20px 30px;
+  border: 3px solid gold;
+  border-radius: 10px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 16px;
+  opacity: 0;
   pointer-events: none;
-  user-select: none;
+  transition: opacity 0.5s ease;
 }

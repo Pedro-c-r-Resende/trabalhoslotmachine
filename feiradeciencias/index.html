@@ -1,22 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Gambling</title>
-    <link rel="stylesheet" href="style.css"> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jogo do Ratinho</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Gambling</h1>
-<div class="slot-machine">
-  <div class="slot" id="slot1">🍒</div>
-  <div class="slot" id="slot2">🍋</div>
-  <div class="slot" id="slot3">🍉</div>
-</div>
-<button id="spin">Spin</button>
-<div id="mode-indicator">-</div>
+  <div class="slot-machine">
+    <h1 class="title">Jogo do Ratinho</h1>
+  
+    <div class="image-placeholder">
+      <img src="file_00000000b95061f7bccfcf933bad9660.png" alt="Imagem do jogo" />
+    </div>
+  
+    <div class="reels">
+      <div class="reel" id="slot1">❓</div>
+      <div class="reel" id="slot2">❓</div>
+      <div class="reel" id="slot3">❓</div>
+    </div>
+  
+    <div class="button-container">
+      <button class="button" id="spin">GIRAR 🎰</button>
+    </div>
+  
+    <div class="info-controls">
+      <div class="control saldo-control">
+        <p>Saldo: R$ <span id="saldo">1000</span></p>
+        <button class="btn-control" id="saldo-menor">-</button>
+        <button class="btn-control" id="saldo-maior">+</button>
+      </div>
+  
+      <div class="control aposta-control">
+        <p>Aposta: R$ <span id="aposta">50</span></p>
+        <button class="btn-control" id="aposta-menor">-</button>
+        <button class="btn-control" id="aposta-maior">+</button>
+      </div>
+    </div>
+  </div>
 
+  <div id="result-box"></div>
 
-<script src="code.js"></script>
+  <div class="mode-indicator">
+    <span id="mode-indicator">L</span>
+  </div>
+
+  <script src="code.js"></script>
 </body>
 </html>

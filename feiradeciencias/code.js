@@ -1,48 +1,81 @@
-const icons = ['🍒', '🍋', '🍉', '🔔', '⭐', '7️⃣'];
+const icons = ['🍀', '🧀', '🐭', '💰', '⭐'];
 
 const slot1 = document.getElementById('slot1');
 const slot2 = document.getElementById('slot2');
 const slot3 = document.getElementById('slot3');
 const spinButton = document.getElementById('spin');
+const resultBox = document.getElementById('result-box');
+const modeIndicator = document.getElementById('mode-indicator');
+
+const saldoSpan = document.getElementById('saldo');
+const apostaSpan = document.getElementById('aposta');
+
+const saldoMenor = document.getElementById('saldo-menor');
+const saldoMaior = document.getElementById('saldo-maior');
+const apostaMenor = document.getElementById('aposta-menor');
+const apostaMaior = document.getElementById('aposta-maior');
+
+let saldo = 1000;
+let aposta = 50;
 
 let mode = null;
 
-const modeIndicator = document.getElementById('mode-indicator');
+const audioWin = new Audio('WIN.mp3');
+const audioAlmost = new Audio('ALMOST.mp3');
+const audioLose = new Audio('LOSE.mp3');
+const audioSpin = new Audio('SPIN.mp3');
 
 document.addEventListener('keydown', (event) => {
-    switch(event.key.toLowerCase()){
-        case 'q':
-            mode = 'win';
-            modeIndicator.textContent = 'w';
-        break;
-        case 'w':
-            mode = 'almost';
-            modeIndicator.textContent = 'A';
-        break;
-        case 'e':
-            mode = 'lose';
-            modeIndicator.textContent = 'L';
-        break;
-    }
-})
+  switch(event.key.toLowerCase()){
+    case 'q':
+      mode = 'win';
+      modeIndicator.textContent = 'W';
+      break;
+    case 'w':
+      mode = 'almost';
+      modeIndicator.textContent = 'A';
+      break;
+    case 'e':
+      mode = 'lose';
+      modeIndicator.textContent = 'L';
+      break;
+  }
+});
 
 function getDifferentIcon(exclude) {
   return icons.filter(icon => !exclude.includes(icon))[Math.floor(Math.random() * (icons.length - exclude.length))];
 }
 
-function spinSlot(slot, delay, finalIcon) {
+function spinSlot(slot, duration, finalIcon) {
   return new Promise(resolve => {
-    let counter = 0;
+    const intervalTime = 100;  // muda o ícone a cada 100ms
+    let elapsed = 0;
     const interval = setInterval(() => {
       slot.textContent = icons[Math.floor(Math.random() * icons.length)];
-      counter++;
-      if (counter > 20) {
+      elapsed += intervalTime;
+      if (elapsed >= duration) {
         clearInterval(interval);
         slot.textContent = finalIcon;
         resolve();
       }
-    }, delay);
+    }, intervalTime);
   });
+}
+
+function showResult(message, audio) {
+  resultBox.textContent = message;
+  resultBox.style.opacity = 1;
+  resultBox.style.pointerEvents = 'auto';
+
+  if (audio) {
+    audio.currentTime = 0;
+    audio.play().catch(e => console.log("Erro ao tocar áudio:", e));
+  }
+
+  setTimeout(() => {
+    resultBox.style.opacity = 0;
+    resultBox.style.pointerEvents = 'none';
+  }, 3000);
 }
 
 spinButton.addEventListener('click', async () => {
@@ -51,44 +84,70 @@ spinButton.addEventListener('click', async () => {
   let finalIcons = [];
 
   if (mode === 'win') {
-    // WIN: All 3 the same
     const chosen = icons[Math.floor(Math.random() * icons.length)];
     finalIcons = [chosen, chosen, chosen];
-
-  }  else if (mode == 'almost') {
-    // ALMOST: 2 same, 1 different
+  } else if (mode === 'almost') {
     const match = icons[Math.floor(Math.random() * icons.length)];
     const odd = getDifferentIcon([match]);
-    const oddIndex = Math.floor(Math.random() * 3);
-    finalIcons = [match, match, match];
-    finalIcons[oddIndex] = odd;
+    finalIcons = [match, match, odd];
   } else {
-    // LOSE: All 3 different
     const a = icons[Math.floor(Math.random() * icons.length)];
     const b = getDifferentIcon([a]);
     const c = getDifferentIcon([a, b]);
     finalIcons = [a, b, c];
   }
 
-  // Spin animation and show final result
-  await spinSlot(slot1, 100, finalIcons[0]);
-  await spinSlot(slot2, 100, finalIcons[1]);
-  await spinSlot(slot3, 100, finalIcons[2]);
+  audioSpin.currentTime = 0;
+  audioSpin.play().catch(e => console.log("Erro ao tocar áudio de giro:", e));
+
+  const totalSpinTime = 4000; // 4 segundos para o giro completo
+  const slot1Time = 2500;
+  const slot2Time = 3200;
+  const slot3Time = 4000;
+
+  await Promise.all([
+    spinSlot(slot1, slot1Time, finalIcons[0]),
+    spinSlot(slot2, slot2Time, finalIcons[1]),
+    spinSlot(slot3, slot3Time, finalIcons[2]),
+  ]);
+
+  audioSpin.pause();
+  audioSpin.currentTime = 0;
 
   await new Promise(resolve => setTimeout(resolve, 500));
 
-  // Optional feedback
   if (finalIcons[0] === finalIcons[1] && finalIcons[1] === finalIcons[2]) {
-    alert(`🎉 JACKPOT! 3x ${finalIcons[0]} 🎉`);
+    showResult(`🎉 JACKPOT! 3x ${finalIcons[0]} 🎉`, audioWin);
   } else if (
     finalIcons[0] === finalIcons[1] ||
     finalIcons[1] === finalIcons[2] ||
     finalIcons[0] === finalIcons[2]
   ) {
-    alert(`💔 Quase! Dois ${finalIcons[1]} iguais, mas não venceu.`);
+    showResult(`💔 Quase! Dois ${finalIcons[1]} iguais.`, audioAlmost);
   } else {
-    alert("🙃 Azar! Nenhum símbolo combinou.");
+    showResult("🙃 Azar! Nenhum símbolo combinou.", audioLose);
   }
 
   spinButton.disabled = false;
+});
+
+// Controles de saldo e aposta
+saldoMenor.addEventListener('click', () => {
+  saldo = Math.max(0, saldo - 10);
+  saldoSpan.textContent = saldo;
+});
+
+saldoMaior.addEventListener('click', () => {
+  saldo += 10;
+  saldoSpan.textContent = saldo;
+});
+
+apostaMenor.addEventListener('click', () => {
+  aposta = Math.max(10, aposta - 10);
+  apostaSpan.textContent = aposta;
+});
+
+apostaMaior.addEventListener('click', () => {
+  aposta += 10;
+  apostaSpan.textContent = aposta;
 });
