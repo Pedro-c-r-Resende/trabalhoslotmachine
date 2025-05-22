@@ -42,13 +42,19 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
+function atualizarInterface() {
+  saldoSpan.textContent = saldo;
+  apostaSpan.textContent = aposta;
+  spinButton.disabled = saldo < aposta;
+}
+
 function getDifferentIcon(exclude) {
   return icons.filter(icon => !exclude.includes(icon))[Math.floor(Math.random() * (icons.length - exclude.length))];
 }
 
 function spinSlot(slot, duration, finalIcon) {
   return new Promise(resolve => {
-    const intervalTime = 100;  // muda o ícone a cada 100ms
+    const intervalTime = 100;  
     let elapsed = 0;
     const interval = setInterval(() => {
       slot.textContent = icons[Math.floor(Math.random() * icons.length)];
@@ -79,6 +85,14 @@ function showResult(message, audio) {
 }
 
 spinButton.addEventListener('click', async () => {
+  if (saldo < aposta) {
+    showResult("⚠️ Saldo insuficiente!", null);
+    return;
+  }
+
+  saldo -= aposta;
+  atualizarInterface();
+
   spinButton.disabled = true;
 
   let finalIcons = [];
@@ -100,7 +114,6 @@ spinButton.addEventListener('click', async () => {
   audioSpin.currentTime = 0;
   audioSpin.play().catch(e => console.log("Erro ao tocar áudio de giro:", e));
 
-  const totalSpinTime = 4000; // 4 segundos para o giro completo
   const slot1Time = 2500;
   const slot2Time = 3200;
   const slot3Time = 4000;
@@ -117,37 +130,44 @@ spinButton.addEventListener('click', async () => {
   await new Promise(resolve => setTimeout(resolve, 500));
 
   if (finalIcons[0] === finalIcons[1] && finalIcons[1] === finalIcons[2]) {
-    showResult(`🎉 JACKPOT! 3x ${finalIcons[0]} 🎉`, audioWin);
+    const premio = aposta * 10; // prêmio de 10x a aposta
+    saldo += premio;
+    showResult(`🎉 JACKPOT! 3x ${finalIcons[0]} 🎉 +${premio}`, audioWin);
   } else if (
     finalIcons[0] === finalIcons[1] ||
     finalIcons[1] === finalIcons[2] ||
     finalIcons[0] === finalIcons[2]
   ) {
-    showResult(`💔 Quase! Dois ${finalIcons[1]} iguais.`, audioAlmost);
+    const premio = aposta * 0.5; // recupera metade da aposta
+    saldo += premio;
+    showResult(`💔 Quase! +${premio}`, audioAlmost);
   } else {
     showResult("🙃 Azar! Nenhum símbolo combinou.", audioLose);
   }
 
+  atualizarInterface();
   spinButton.disabled = false;
 });
 
 // Controles de saldo e aposta
 saldoMenor.addEventListener('click', () => {
   saldo = Math.max(0, saldo - 10);
-  saldoSpan.textContent = saldo;
+  atualizarInterface();
 });
 
 saldoMaior.addEventListener('click', () => {
   saldo += 10;
-  saldoSpan.textContent = saldo;
+  atualizarInterface();
 });
 
 apostaMenor.addEventListener('click', () => {
   aposta = Math.max(10, aposta - 10);
-  apostaSpan.textContent = aposta;
+  atualizarInterface();
 });
 
 apostaMaior.addEventListener('click', () => {
   aposta += 10;
-  apostaSpan.textContent = aposta;
+  atualizarInterface();
 });
+
+atualizarInterface();

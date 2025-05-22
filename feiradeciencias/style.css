@@ -17,7 +17,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;          /* para caber na tela inteira */
+  height: 500px;          /* para caber na tela inteira */
   box-sizing: border-box;
   overflow: hidden;
 }
